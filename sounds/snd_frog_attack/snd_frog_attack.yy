@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"snd_frog_attack",
+  "audioGroupId":{
+    "name":"licensed_sound",
+    "path":"audiogroups/licensed_sound",
+  },
+  "bitDepth":1,
+  "bitRate":512,
+  "compression":2,
+  "conversionMode":0,
+  "duration":0.9545351,
+  "name":"snd_frog_attack",
+  "parent":{
+    "name":"Frog",
+    "path":"folders/Sounds/SFX/Frog.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":48000,
+  "soundFile":"snd_frog_attack.mp3",
+  "type":2,
+  "volume":0.1,
+}

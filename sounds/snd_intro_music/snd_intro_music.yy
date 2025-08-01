@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"snd_intro_music",
+  "audioGroupId":{
+    "name":"licensed_sound",
+    "path":"audiogroups/licensed_sound",
+  },
+  "bitDepth":1,
+  "bitRate":512,
+  "compression":2,
+  "conversionMode":0,
+  "duration":0.0,
+  "name":"snd_intro_music",
+  "parent":{
+    "name":"Music",
+    "path":"folders/Sounds/Music.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":48000,
+  "soundFile":"snd_intro_music",
+  "type":2,
+  "volume":0.1,
+}

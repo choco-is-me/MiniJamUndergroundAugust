@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"snd_dead",
+  "audioGroupId":{
+    "name":"licensed_sound",
+    "path":"audiogroups/licensed_sound",
+  },
+  "bitDepth":1,
+  "bitRate":512,
+  "compression":2,
+  "conversionMode":0,
+  "duration":3.3840137,
+  "name":"snd_dead",
+  "parent":{
+    "name":"Frog",
+    "path":"folders/Sounds/SFX/Frog.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":48000,
+  "soundFile":"snd_dead.mp3",
+  "type":2,
+  "volume":0.1,
+}

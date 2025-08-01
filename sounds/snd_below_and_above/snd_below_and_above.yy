@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"snd_below_and_above",
+  "audioGroupId":{
+    "name":"licensed_sound",
+    "path":"audiogroups/licensed_sound",
+  },
+  "bitDepth":1,
+  "bitRate":512,
+  "compression":2,
+  "conversionMode":0,
+  "duration":212.41614,
+  "name":"snd_below_and_above",
+  "parent":{
+    "name":"Music",
+    "path":"folders/Sounds/Music.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":48000,
+  "soundFile":"snd_below_and_above.mp3",
+  "type":2,
+  "volume":0.3,
+}

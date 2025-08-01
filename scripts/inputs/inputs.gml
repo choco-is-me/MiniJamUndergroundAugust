@@ -1,7 +1,9 @@
 function get_controls(){
     if (global.input_locked) {
+        key_left = 0;
         key_left_hold = 0;
         
+        key_right = 0;
         key_right_hold = 0;
         
         key_up = 0;
@@ -10,17 +12,22 @@ function get_controls(){
         key_down = 0;
         key_down_hold = 0;
         
-        key_space_pressed = 0;
-        key_space_held = 0;
-        key_space_released = 0;
+        key_action_pressed = 0;
+        key_action_held = 0;
         
-        mouse_left_pressed = 0;
+        key_interact_pressed = 0;
+        key_interact_held = 0;
+        
+        key_pause_pressed = 0;
         key_fullscreen_pressed = 0;
         return;
     }
     
+    // Movement controls - both pressed and held states
+    key_left = InputPressed(INPUT_VERB.LEFT);
     key_left_hold = InputCheck(INPUT_VERB.LEFT);
     
+    key_right = InputPressed(INPUT_VERB.RIGHT);
     key_right_hold = InputCheck(INPUT_VERB.RIGHT);
     
     key_up = InputPressed(INPUT_VERB.UP);
@@ -29,11 +36,15 @@ function get_controls(){
     key_down = InputPressed(INPUT_VERB.DOWN);
     key_down_hold = InputCheck(INPUT_VERB.DOWN);
     
-    key_space_pressed = InputPressed(INPUT_VERB.JUMP_PRESSED);
-    key_space_held = InputCheck(INPUT_VERB.JUMP_HELD);
-    key_space_released = InputReleased(INPUT_VERB.JUMP_RELEASED);
+    // Action controls for mining
+    key_action_pressed = InputPressed(INPUT_VERB.ACTION_PRESSED);
+    key_action_held = InputCheck(INPUT_VERB.ACTION_HELD);
     
-    mouse_left_pressed = InputPressed(INPUT_VERB.MOUSE_LEFT);
+    // Interaction controls for doors, NPCs, etc.
+    key_interact_pressed = InputPressed(INPUT_VERB.INTERACT_PRESSED);
+    key_interact_held = InputCheck(INPUT_VERB.INTERACT_HELD);
     
+    // System controls
+    key_pause_pressed = InputPressed(INPUT_VERB.PAUSE);
     key_fullscreen_pressed = InputPressed(INPUT_VERB.FULLSCREEN);
 }

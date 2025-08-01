@@ -11,7 +11,7 @@ switch(state) {
             alpha = 1;
             
             // Perform teleportation
-            with (obj_frog) {
+            with (obj_player) {
                 // Move to target room if different
                 if (room != other.target_room) {
                     room_goto(other.target_room);

@@ -12,7 +12,7 @@ function __InputConfigVerbs()
         JUMP_RELEASED,
         MOUSE_LEFT,
         PAUSE,
-        FULLSCREEN // Add this new enum value for fullscreen toggle
+        FULLSCREEN
     }
     
     enum INPUT_CLUSTER

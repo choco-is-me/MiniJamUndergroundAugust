@@ -30,7 +30,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"spr_stone_item",
+    "path":"sprites/spr_stone_item/spr_stone_item.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

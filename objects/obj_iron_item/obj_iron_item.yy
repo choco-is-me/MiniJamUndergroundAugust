@@ -30,7 +30,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"spr_iron_item",
+    "path":"sprites/spr_iron_item/spr_iron_item.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

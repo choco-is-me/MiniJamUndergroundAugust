@@ -30,7 +30,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"spr_gold_item",
+    "path":"sprites/spr_gold_item/spr_gold_item.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

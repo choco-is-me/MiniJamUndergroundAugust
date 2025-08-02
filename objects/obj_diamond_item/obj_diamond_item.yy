@@ -30,7 +30,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"spr_diamond_item",
+    "path":"sprites/spr_diamond_item/spr_diamond_item.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

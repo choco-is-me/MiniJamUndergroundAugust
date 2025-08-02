@@ -32,7 +32,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"spr_player_idle_right",
+    "path":"sprites/spr_player_idle_right/spr_player_idle_right.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

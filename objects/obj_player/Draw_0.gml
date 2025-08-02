@@ -5,17 +5,17 @@ var sprite_to_use;
 
 switch(state) {
     case PLAYER_STATE.IDLE:
-        sprite_to_use = spr_player_idle_left;
+        sprite_to_use = spr_player_idle_right;
         break;
         
     case PLAYER_STATE.MOVING:
     case PLAYER_STATE.MINING: // Use move animation for mining too, pickaxe will be separate
-        sprite_to_use = spr_player_move_left;
+        sprite_to_use = spr_player_move_right;
         break;
 }
 
 // Draw the player with correct facing
-if (facing == PLAYER_FACING.RIGHT) {
+if (facing == PLAYER_FACING.LEFT) {
     draw_sprite_ext(sprite_to_use, image_index, x, y, -1, 1, 0, c_white, 1); // Flipped horizontally
 } else {
     draw_sprite(sprite_to_use, image_index, x, y);
@@ -53,7 +53,7 @@ if (state == PLAYER_STATE.MINING && mining_target != noone) {
     var offset_x = (facing == PLAYER_FACING.RIGHT) ? 16 : -16;
     
     // Draw the pickaxe
-    if (facing == PLAYER_FACING.RIGHT) {
+    if (facing == PLAYER_FACING.LEFT) {
         draw_sprite_ext(pickaxe_sprite, pickaxe_frame, x + offset_x, y, -1, 1, 0, c_white, 1);
     } else {
         draw_sprite(pickaxe_sprite, pickaxe_frame, x + offset_x, y);

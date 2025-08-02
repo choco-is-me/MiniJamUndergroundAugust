@@ -102,7 +102,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.13.1.193",
+    "IDEVersion":"2024.13.0.190",
   },
   "name":"MiniJamUndergroundAugust",
   "resources":[
@@ -451,6 +451,7 @@
     {"id":{"name":"spr_pickaxe_prismatic","path":"sprites/spr_pickaxe_prismatic/spr_pickaxe_prismatic.yy",},},
     {"id":{"name":"spr_pickaxe_stone","path":"sprites/spr_pickaxe_stone/spr_pickaxe_stone.yy",},},
     {"id":{"name":"spr_pickaxe_wood","path":"sprites/spr_pickaxe_wood/spr_pickaxe_wood.yy",},},
+    {"id":{"name":"spr_player_idle_left","path":"sprites/spr_player_idle_left/spr_player_idle_left.yy",},},
     {"id":{"name":"spr_stone_item","path":"sprites/spr_stone_item/spr_stone_item.yy",},},
     {"id":{"name":"spr_stone","path":"sprites/spr_stone/spr_stone.yy",},},
     {"id":{"name":"spr_swamp_background","path":"sprites/spr_swamp_background/spr_swamp_background.yy",},},

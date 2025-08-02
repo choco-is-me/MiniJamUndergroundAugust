@@ -1,4 +1,7 @@
-// Step
+/// @description Handle room transition states
+
+var dt = delta_time / 1000000;     // Convert delta_time to seconds
+
 switch(state) {
     case "inactive":
         // Nothing to do when inactive
@@ -6,9 +9,11 @@ switch(state) {
         
     case "fading_in":
         // Fade screen to black
-        alpha += fade_in_speed;
+        timer += dt;
+        alpha = timer / fade_in_duration;
         if (alpha >= 1) {
             alpha = 1;
+            timer = 0;
             
             // Perform teleportation
             with (obj_player) {
@@ -30,23 +35,25 @@ switch(state) {
             }
             
             state = "delay";
-            delay_timer = delay;
         }
         break;
         
     case "delay":
         // Wait while screen is black
-        delay_timer--;
-        if (delay_timer <= 0) {
+        timer += dt;
+        if (timer >= delay_duration) {
+            timer = 0;
             state = "fading_out";
         }
         break;
         
     case "fading_out":
         // Fade screen back in
-        alpha -= fade_out_speed;
+        timer += dt;
+        alpha = 1 - (timer / fade_out_duration);
         if (alpha <= 0) {
             alpha = 0;
+            timer = 0;
             state = "inactive";
         }
         break;

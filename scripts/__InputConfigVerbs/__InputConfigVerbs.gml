@@ -11,7 +11,8 @@ function __InputConfigVerbs()
         INTERACT_PRESSED,
         INTERACT_HELD,
         PAUSE,
-        FULLSCREEN
+        FULLSCREEN,
+        UPGRADE_PICKAXE // Added new verb for pickaxe upgrading
     }
     
     enum INPUT_CLUSTER
@@ -38,6 +39,9 @@ function __InputConfigVerbs()
     
     // Fullscreen toggle - F11 on keyboard, no mapping for controller
     InputDefineVerb(INPUT_VERB.FULLSCREEN,      "fullscreen",      vk_f11,             undefined);
+    
+    // Pickaxe upgrade - Tab key on keyboard, Y button on gamepad
+    InputDefineVerb(INPUT_VERB.UPGRADE_PICKAXE, "upgrade_pickaxe", vk_tab,             gp_face3);
     
     // Define the NAVIGATION cluster
     InputDefineCluster(INPUT_CLUSTER.NAVIGATION, INPUT_VERB.UP, INPUT_VERB.RIGHT, INPUT_VERB.DOWN, INPUT_VERB.LEFT);

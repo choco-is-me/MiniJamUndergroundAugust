@@ -85,9 +85,12 @@ if (_interaction_detected && !menu_locked) {
     switch (selected_option) {
         case 0: // New Game
             menu_locked = true;
-            // Create transition with next_room action
-            var trans = instance_create_layer(0, 0, "Instances", obj_transition);
-            trans.target_action = "next_room";
+            // Create transition with next_room action, but only if one hasn't been created yet
+            if (!transition_created) {
+                var trans = instance_create_layer(0, 0, "Instances", obj_transition);
+                trans.target_action = "next_room";
+                transition_created = true; // Set flag to prevent creating multiple transitions
+            }
             break;
         case 1: // Exit (Touch Some Grass)
             game_end(); 

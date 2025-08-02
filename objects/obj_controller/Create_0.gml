@@ -1,6 +1,8 @@
-// Create
+/// @description Initialize variables and fonts
 global.input_locked = false;
-font_list = [
+
+// Initialize font list - store in an instance or global variable depending on need
+self.font_list = [
     fnt_main,
     fnt_main_outline,
     fnt_main_glow,

@@ -1,4 +1,5 @@
-// Draw GUI
+/// @description Draw transition overlay
+
 // Draw black overlay with current alpha
 draw_set_color(c_black);
 draw_set_alpha(alpha);

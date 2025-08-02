@@ -22,6 +22,7 @@ selected_option = 0;
 menu_locked = false;
 menu_level = 0;
 options_count = 0; 
+transition_created = false; // Add flag to track if transition was already created
 
 // Menu positions
 menu_start_x = 0;

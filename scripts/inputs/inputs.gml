@@ -20,6 +20,8 @@ function get_controls(){
         
         key_pause_pressed = 0;
         key_fullscreen_pressed = 0;
+        
+        key_upgrade_pickaxe = 0; // Added new key variable
         return;
     }
     
@@ -47,4 +49,7 @@ function get_controls(){
     // System controls
     key_pause_pressed = InputPressed(INPUT_VERB.PAUSE);
     key_fullscreen_pressed = InputPressed(INPUT_VERB.FULLSCREEN);
+    
+    // Pickaxe upgrade control - typically want this as a pressed action, not held
+    key_upgrade_pickaxe = InputPressed(INPUT_VERB.UPGRADE_PICKAXE);
 }

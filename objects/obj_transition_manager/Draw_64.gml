@@ -1,4 +1,5 @@
-// Draw GUI
+/// @description Draw transition overlay
+
 if (alpha > 0) {
     // Store previous settings
     var prev_alpha = draw_get_alpha();

@@ -1,15 +1,18 @@
 {
   "$GMObject":"",
-  "%Name":"obj_platform",
+  "%Name":"obj_wall",
   "eventList":[],
   "managed":true,
-  "name":"obj_platform",
+  "name":"obj_wall",
   "overriddenProperties":[],
   "parent":{
-    "name":"Platforms",
-    "path":"folders/Objects/Platforms.yy",
+    "name":"Walls",
+    "path":"folders/Objects/Walls.yy",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"obj_solid",
+    "path":"objects/obj_solid/obj_solid.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
@@ -27,7 +30,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"spr_normal_platform",
+    "path":"sprites/spr_normal_platform/spr_normal_platform.yy",
+  },
   "spriteMaskId":null,
-  "visible":true,
+  "visible":false,
 }

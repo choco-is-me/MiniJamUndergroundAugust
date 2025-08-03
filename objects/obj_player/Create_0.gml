@@ -469,6 +469,26 @@ function is_pickaxe_upgrade_available() {
     return false;
 }
 
+// Get the appropriate upgrade button sprite based on current pickaxe level
+function get_upgrade_button_sprite() {
+    switch(pickaxe_level) {
+        case PICKAXE_TYPE.WOOD:
+            return spr_pickaxe_button_stone;
+            
+        case PICKAXE_TYPE.STONE:
+            return spr_pickaxe_button_iron;
+            
+        case PICKAXE_TYPE.IRON:
+            return spr_pickaxe_button_gold;
+            
+        case PICKAXE_TYPE.GOLD:
+            return spr_pickaxe_button_diamond;
+            
+        default:
+            return spr_pickaxe_button_stone; // Fallback
+    }
+}
+
 // Handle pickaxe upgrade attempt
 function attempt_pickaxe_upgrade() {
     // Check if already at max level

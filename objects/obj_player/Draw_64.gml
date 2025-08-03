@@ -34,6 +34,22 @@ var sprite_center_x = base_x + (max_sprite_width * RESOURCE_SPRITE_SCALE / 2);
 var text_x_pos = base_x + (max_sprite_width * RESOURCE_SPRITE_SCALE) + SPRITE_TEXT_GAP;
 var number_x_pos = text_x_pos + X_NUMBER_GAP;
 
+// Calculate the width of the entire resource counter section
+// This includes the sprite, the "x", and the widest number
+var max_number_width = 0;
+draw_set_font(fnt_main_outline); // Ensure correct font is set
+for (var i = 0; i < array_length(resource_counts); i++) {
+    var text_width = string_width(string(resource_counts[i])) * RESOURCE_TEXT_SCALE;
+    if (text_width > max_number_width) {
+        max_number_width = text_width;
+    }
+}
+
+// Calculate the full display width and center position
+var total_display_width = (max_sprite_width * RESOURCE_SPRITE_SCALE) + SPRITE_TEXT_GAP + 
+                         string_width("x") * RESOURCE_TEXT_SCALE + X_NUMBER_GAP + max_number_width;
+var display_center_x = base_x + (total_display_width / 2);
+
 // Draw each resource item and count
 var current_y = base_y - (array_length(resource_sprites) * (sprite_get_height(resource_sprites[0]) * RESOURCE_SPRITE_SCALE + RESOURCE_DISPLAY_SPACING)) + RESOURCE_DISPLAY_SPACING;
 
@@ -93,11 +109,14 @@ if (is_pickaxe_upgrade_available()) {
     // Position the button centered above the resource counters with more distance
     var resources_top_y = base_y - (array_length(resource_sprites) * (sprite_get_height(resource_sprites[0]) * RESOURCE_SPRITE_SCALE + RESOURCE_DISPLAY_SPACING));
     var button_y = resources_top_y - 50; // Adjusted: Increased space above the resources
-    var button_x = sprite_center_x;
+    var button_x = display_center_x; // Use the center of the entire display
     var button_y_float = sin(current_time / 500) * 3; // Small floating effect
     
+    // Get the appropriate upgrade button sprite based on current pickaxe level
+    var upgrade_button_sprite = get_upgrade_button_sprite();
+    
     draw_sprite_ext(
-        spr_pickaxe_button,
+        upgrade_button_sprite,
         button_frame,
         button_x,
         button_y + button_y_float,

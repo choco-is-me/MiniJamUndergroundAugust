@@ -6,10 +6,12 @@
 #macro STONE_FRAMES 1  // Max frame index (0-1, so value is 1)
 #macro STONE_NO_ANIMATION 0
 #macro ITEMS_LAYER_DEPTH_OFFSET 100
-#macro STONE_DROP_MIN 1
-#macro STONE_DROP_MAX 3
 #macro STONE_DROP_OFFSET_MIN -8
 #macro STONE_DROP_OFFSET_MAX 8
+
+// Constants for shake effect
+#macro STONE_SHAKE_DURATION 0.2    // Duration in seconds
+#macro STONE_SHAKE_INTENSITY 2     // Maximum shake offset in pixels
 
 // Flag to track if this resource is in mining range of player
 in_mining_range = false;
@@ -26,6 +28,12 @@ resource_name = "Stone";
 image_index = irandom(STONE_FRAMES); // Randomly select frame 0 or 1
 image_speed = STONE_NO_ANIMATION; // Stop animation to keep the selected frame
 
+// Shake effect variables
+shake_time_remaining = 0;
+shake_intensity = 0;
+x_offset = 0;
+y_offset = 0;
+
 /// @function hit_resource(pickaxe_level)
 /// @param {real} pickaxe_level The level of the pickaxe hitting this resource
 function hit_resource(pickaxe_level) {
@@ -41,8 +49,9 @@ function hit_resource(pickaxe_level) {
         // Apply damage to resource
         hp -= damage;
         
-        // Create hit effect/animation here if desired
-        // (particle effects, sound, etc.)
+        // Trigger shake effect
+        shake_time_remaining = STONE_SHAKE_DURATION;
+        shake_intensity = STONE_SHAKE_INTENSITY;
         
         // Check if resource is broken
         if (hp <= 0) {
@@ -53,14 +62,10 @@ function hit_resource(pickaxe_level) {
                 items_layer = layer_create(depth - ITEMS_LAYER_DEPTH_OFFSET, "Items");
             }
             
-            // Spawn 1-3 stone items when broken
-            var item_count = irandom_range(STONE_DROP_MIN, STONE_DROP_MAX);
-            for (var i = 0; i < item_count; i++) {
-                // Create with slight random offset
-                var offset_x = random_range(STONE_DROP_OFFSET_MIN, STONE_DROP_OFFSET_MAX);
-                var offset_y = random_range(STONE_DROP_OFFSET_MIN, STONE_DROP_OFFSET_MAX);
-                instance_create_layer(x + offset_x, y + offset_y, items_layer, obj_stone_item);
-            }
+            // Spawn exactly 1 stone item when broken
+            var offset_x = random_range(STONE_DROP_OFFSET_MIN, STONE_DROP_OFFSET_MAX);
+            var offset_y = random_range(STONE_DROP_OFFSET_MIN, STONE_DROP_OFFSET_MAX);
+            instance_create_layer(x + offset_x, y + offset_y, items_layer, obj_stone_item);
             
             // Destroy the resource
             instance_destroy();

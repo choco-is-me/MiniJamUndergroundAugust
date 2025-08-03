@@ -24,6 +24,9 @@ if (key_upgrade_pickaxe) {
     attempt_pickaxe_upgrade();
 }
 
+// Manage sound effects
+manage_running_sound();
+
 // Update animation
 update_animation();
 

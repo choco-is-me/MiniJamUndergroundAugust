@@ -1,11 +1,11 @@
 {
   "$GMSprite":"",
   "%Name":"spr_player_idle_right",
-  "bboxMode":0,
+  "bboxMode":2,
   "bbox_bottom":11,
   "bbox_left":4,
   "bbox_right":11,
-  "bbox_top":2,
+  "bbox_top":9,
   "collisionKind":1,
   "collisionTolerance":0,
   "DynamicTexturePage":false,

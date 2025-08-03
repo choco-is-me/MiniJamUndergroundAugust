@@ -27,6 +27,11 @@ hspd = 0;
 vspd = 0;
 move_dir = 0;
 
+// Sound variables
+running_sound_playing = false;
+digging_sound_cooldown = 0;
+#macro DIGGING_SOUND_COOLDOWN 0.5 // Match ACTION_COOLDOWN for digging sound
+
 // Mining variables
 mining_timer = 0;
 #macro MINING_DURATION 0.5 // Time in seconds for mining animation
@@ -126,6 +131,12 @@ function process_idle_state() {
             can_perform_action = false;
             action_cooldown_timer = 0;
             pickaxe_angle = pickaxe_start_angle * (facing == PLAYER_FACING.RIGHT ? 1 : -1);
+            
+            // Play digging sound
+            if (digging_sound_cooldown <= 0) {
+                audio_play_sound(snd_digging, 10, false);
+                digging_sound_cooldown = DIGGING_SOUND_COOLDOWN;
+            }
             exit;
         }
     }
@@ -224,6 +235,12 @@ function process_movement_state() {
             pickaxe_angle = pickaxe_start_angle * (facing == PLAYER_FACING.RIGHT ? 1 : -1);
             hspd = 0;
             vspd = 0;
+            
+            // Play digging sound
+            if (digging_sound_cooldown <= 0) {
+                audio_play_sound(snd_digging, 10, false);
+                digging_sound_cooldown = DIGGING_SOUND_COOLDOWN;
+            }
             exit;
         }
     }
@@ -593,5 +610,32 @@ function update_action_cooldown() {
             can_perform_action = true;
             action_cooldown_timer = 0;
         }
+    }
+    
+    // Update sound cooldown
+    if (digging_sound_cooldown > 0) {
+        digging_sound_cooldown -= delta_time / 1000000;
+    }
+}
+
+// Manage running sound
+function manage_running_sound() {
+    // Determine if the player is actually moving and not just pushing against a wall
+    var is_actually_moving = (
+        (state == PLAYER_STATE.MOVING) && 
+        (hspd != 0 || vspd != 0) && 
+        !(h_wall_collision && v_wall_collision)
+    );
+    
+    // Start or stop the running sound based on movement state
+    if (is_actually_moving && !running_sound_playing) {
+        // Start running sound
+        running_sound_playing = true;
+        audio_play_sound(snd_running, 5, true);
+    } 
+    else if (!is_actually_moving && running_sound_playing) {
+        // Stop running sound
+        running_sound_playing = false;
+        audio_stop_sound(snd_running);
     }
 }

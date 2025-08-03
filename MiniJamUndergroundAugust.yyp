@@ -448,7 +448,7 @@
     {"id":{"name":"spr_pickaxe_button_diamond","path":"sprites/spr_pickaxe_button_diamond/spr_pickaxe_button_diamond.yy",},},
     {"id":{"name":"spr_pickaxe_button_gold","path":"sprites/spr_pickaxe_button_gold/spr_pickaxe_button_gold.yy",},},
     {"id":{"name":"spr_pickaxe_button_iron","path":"sprites/spr_pickaxe_button_iron/spr_pickaxe_button_iron.yy",},},
-    {"id":{"name":"spr_pickaxe_button","path":"sprites/spr_pickaxe_button/spr_pickaxe_button.yy",},},
+    {"id":{"name":"spr_pickaxe_button_stone","path":"sprites/spr_pickaxe_button_stone/spr_pickaxe_button_stone.yy",},},
     {"id":{"name":"spr_pickaxe_gold","path":"sprites/spr_pickaxe_gold/spr_pickaxe_gold.yy",},},
     {"id":{"name":"spr_pickaxe_iron","path":"sprites/spr_pickaxe_iron/spr_pickaxe_iron.yy",},},
     {"id":{"name":"spr_pickaxe_prismatic","path":"sprites/spr_pickaxe_prismatic/spr_pickaxe_prismatic.yy",},},

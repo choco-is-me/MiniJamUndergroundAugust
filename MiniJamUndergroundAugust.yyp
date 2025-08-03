@@ -140,6 +140,8 @@
     {"id":{"name":"initialization_room","path":"rooms/initialization_room/initialization_room.yy",},},
     {"id":{"name":"rm_menu","path":"rooms/rm_menu/rm_menu.yy",},},
     {"id":{"name":"rm_stone_1","path":"rooms/rm_stone_1/rm_stone_1.yy",},},
+    {"id":{"name":"rm_stone_2","path":"rooms/rm_stone_2/rm_stone_2.yy",},},
+    {"id":{"name":"rm_stone_3","path":"rooms/rm_stone_3/rm_stone_3.yy",},},
     {"id":{"name":"__InputBindingIsThumbstick","path":"scripts/__InputBindingIsThumbstick/__InputBindingIsThumbstick.yy",},},
     {"id":{"name":"__InputBindingScan","path":"scripts/__InputBindingScan/__InputBindingScan.yy",},},
     {"id":{"name":"__InputClassCluster","path":"scripts/__InputClassCluster/__InputClassCluster.yy",},},
@@ -478,6 +480,8 @@
     {"roomId":{"name":"rm_menu","path":"rooms/rm_menu/rm_menu.yy",},},
     {"roomId":{"name":"rm_stone_1","path":"rooms/rm_stone_1/rm_stone_1.yy",},},
     {"roomId":{"name":"dev_room","path":"rooms/dev_room/dev_room.yy",},},
+    {"roomId":{"name":"rm_stone_2","path":"rooms/rm_stone_2/rm_stone_2.yy",},},
+    {"roomId":{"name":"rm_stone_3","path":"rooms/rm_stone_3/rm_stone_3.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[

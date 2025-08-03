@@ -1,9 +1,9 @@
 /// @description Draw player and pickaxe
 
-// Determine which sprite to use based on state and facing
+// Determine which sprite to use based on VISUAL state and facing
 var sprite_to_use;
 
-switch(state) {
+switch(visual_state) {
     case PLAYER_STATE.IDLE:
         sprite_to_use = spr_player_idle_right;
         break;

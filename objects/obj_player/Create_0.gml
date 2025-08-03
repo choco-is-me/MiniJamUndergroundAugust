@@ -3,6 +3,7 @@
 // Movement constants
 #macro PLAYER_SPEED 120.0 // Units per second instead of per frame
 #macro WALL_SLIDE_BUFFER 2
+#macro WALL_SLIDE_SLOWDOWN 0.3 // Slowdown factor for wall sliding
 
 // State constants
 enum PLAYER_STATE {
@@ -85,10 +86,24 @@ key_upgrade_pickaxe = 0;
 image_speed = 0;
 anim_frame = 0;
 anim_speed = 9.0; // Frames per second
+idle_anim_speed = 4.0; // Frames per second for idle animation (slower than movement)
 
 // UI Animation variables
 #macro BUTTON_ANIM_SPEED 4.0 // Frames per second for button animations
 button_anim_frame = 0;
+
+// Wall collision flags to prevent vibration
+h_wall_collision = false;
+v_wall_collision = false;
+
+// Visual state - can be different from logical state
+// Used to determine which animation to play
+visual_state = PLAYER_STATE.IDLE;
+was_moving = false; // Used to track if player was actually moving before collision
+
+// For storing original speeds before normalization
+h_input_raw = 0;
+v_input_raw = 0;
 
 // FUNCTION DEFINITIONS (still part of Create Event)
 // Idle state processing
@@ -104,6 +119,7 @@ function process_idle_state() {
         var target = find_minable_target();
         if (target != noone) {
             state = PLAYER_STATE.MINING;
+            visual_state = PLAYER_STATE.MINING;
             mining_target = target;
             mining_timer = 0;
             can_perform_action = false;
@@ -116,14 +132,47 @@ function process_idle_state() {
     // No inputs, remain in idle
     hspd = 0;
     vspd = 0;
+    visual_state = PLAYER_STATE.IDLE;
 }
 
 // Movement state processing
 function process_movement_state() {
     // Calculate movement based on input
     var dt_speed = PLAYER_SPEED * (delta_time / 1000000); // Convert to seconds
-    hspd = (key_right_hold - key_left_hold) * dt_speed;
-    vspd = (key_down_hold - key_up_hold) * dt_speed;
+    
+    // Reset wall collision flags if player changes direction
+    if ((key_right_hold && h_wall_collision && hspd < 0) || 
+        (key_left_hold && h_wall_collision && hspd > 0)) {
+        h_wall_collision = false;
+    }
+    
+    if ((key_down_hold && v_wall_collision && vspd < 0) || 
+        (key_up_hold && v_wall_collision && vspd > 0)) {
+        v_wall_collision = false;
+    }
+    
+    // Store raw input values for wall sliding calculations
+    var h_input = key_right_hold - key_left_hold;
+    var v_input = key_down_hold - key_up_hold;
+    h_input_raw = h_input * dt_speed;
+    v_input_raw = v_input * dt_speed;
+    
+    // Apply horizontal movement only if not against a wall or moving away from it
+    if (!h_wall_collision || sign(h_input) != sign(hspd)) {
+        hspd = h_input_raw;
+    } else {
+        hspd = 0;
+    }
+    
+    // Apply vertical movement only if not against a wall or moving away from it
+    if (!v_wall_collision || sign(v_input) != sign(vspd)) {
+        vspd = v_input_raw;
+    } else {
+        vspd = 0;
+    }
+    
+    // Store if we're going to move before normalization
+    was_moving = (hspd != 0 || vspd != 0);
     
     // Normalize diagonal movement to prevent moving faster diagonally
     if (hspd != 0 && vspd != 0) {
@@ -139,9 +188,25 @@ function process_movement_state() {
     // Apply movement with collision handling
     apply_movement_with_collision();
     
-    // Check for state changes
+    // Update visual state based on actual movement
     if (hspd == 0 && vspd == 0) {
+        if ((h_wall_collision || v_wall_collision) && (h_input != 0 || v_input != 0)) {
+            // We're pushing against a wall - use IDLE animation
+            visual_state = PLAYER_STATE.IDLE;
+        } else {
+            // No movement and no wall - truly idle
+            visual_state = PLAYER_STATE.IDLE;
+        }
+    } else {
+        // Actually moving
+        visual_state = PLAYER_STATE.MOVING;
+    }
+    
+    // Check for state changes - only exit MOVING state if no keys are held
+    if ((hspd == 0 && vspd == 0) && 
+        !key_left_hold && !key_right_hold && !key_up_hold && !key_down_hold) {
         state = PLAYER_STATE.IDLE;
+        visual_state = PLAYER_STATE.IDLE;
         exit;
     }
     
@@ -150,6 +215,7 @@ function process_movement_state() {
         var target = find_minable_target();
         if (target != noone) {
             state = PLAYER_STATE.MINING;
+            visual_state = PLAYER_STATE.MINING;
             mining_target = target;
             mining_timer = 0;
             can_perform_action = false;
@@ -167,6 +233,7 @@ function process_mining_state() {
     // Ensure mining target still exists
     if (!instance_exists(mining_target)) {
         state = PLAYER_STATE.IDLE;
+        visual_state = PLAYER_STATE.IDLE;
         mining_target = noone;
         exit;
     }
@@ -175,6 +242,7 @@ function process_mining_state() {
     var still_valid = is_target_valid(mining_target);
     if (!still_valid) {
         state = PLAYER_STATE.IDLE;
+        visual_state = PLAYER_STATE.IDLE;
         mining_target = noone;
         exit;
     }
@@ -198,6 +266,7 @@ function process_mining_state() {
             hit_resource(other.pickaxe_level);
         }
         state = PLAYER_STATE.IDLE;
+        visual_state = PLAYER_STATE.IDLE;
         mining_target = noone;
         mining_timer = 0;
     }
@@ -227,9 +296,11 @@ function apply_movement_with_collision() {
             while (!place_meeting(x + sign(hspd), y, obj_solid)) {
                 x += sign(hspd);
             }
+            h_wall_collision = true; // Set flag that we're against a horizontal wall
             hspd = 0; // Stop horizontal movement
         } else {
             x += hspd; // No collision, apply movement
+            h_wall_collision = false; // Not against a wall anymore
         }
     }
     
@@ -240,21 +311,59 @@ function apply_movement_with_collision() {
             while (!place_meeting(x, y + sign(vspd), obj_solid)) {
                 y += sign(vspd);
             }
+            v_wall_collision = true; // Set flag that we're against a vertical wall
             vspd = 0; // Stop vertical movement
         } else {
             y += vspd; // No collision, apply movement
+            v_wall_collision = false; // Not against a wall anymore
         }
     }
     
     // Wall sliding for diagonal movement - try to slide along walls
-    if (hspd != 0 && vspd != 0) {
+    var dt_speed = PLAYER_SPEED * (delta_time / 1000000); // Convert to seconds
+    
+    if ((key_left_hold || key_right_hold) && (key_up_hold || key_down_hold)) {
         // If we couldn't move horizontally but can move vertically, slide along the wall
-        if (hspd == 0 && !place_meeting(x, y + vspd, obj_solid)) {
-            y += vspd;
+        if (h_wall_collision && !v_wall_collision) {
+            // Only allow sliding if we're actively pressing a key in that direction
+            var v_input = key_down_hold - key_up_hold;
+            if ((v_input > 0 && !place_meeting(x, y+1, obj_solid)) ||
+                (v_input < 0 && !place_meeting(x, y-1, obj_solid))) {
+                // Calculate base slide speed
+                var slide_speed = sign(v_input_raw) * dt_speed;
+                
+                // Apply normalization to the wall sliding speed to match diagonal movement speed
+                if (h_input_raw != 0 && v_input_raw != 0) {
+                    // Same normalization as used for normal movement
+                    slide_speed = slide_speed / sqrt(2);
+                }
+                
+                // Apply additional slowdown factor specifically for wall sliding
+                slide_speed *= WALL_SLIDE_SLOWDOWN;
+                
+                y += slide_speed;
+            }
         }
         // If we couldn't move vertically but can move horizontally, slide along the wall
-        else if (vspd == 0 && !place_meeting(x + hspd, y, obj_solid)) {
-            x += hspd;
+        else if (v_wall_collision && !h_wall_collision) {
+            // Only allow sliding if we're actively pressing a key in that direction
+            var h_input = key_right_hold - key_left_hold;
+            if ((h_input > 0 && !place_meeting(x+1, y, obj_solid)) ||
+                (h_input < 0 && !place_meeting(x-1, y, obj_solid))) {
+                // Calculate base slide speed
+                var slide_speed = sign(h_input_raw) * dt_speed;
+                
+                // Apply normalization to the wall sliding speed to match diagonal movement speed
+                if (h_input_raw != 0 && v_input_raw != 0) {
+                    // Same normalization as used for normal movement
+                    slide_speed = slide_speed / sqrt(2);
+                }
+                
+                // Apply additional slowdown factor specifically for wall sliding
+                slide_speed *= WALL_SLIDE_SLOWDOWN;
+                
+                x += slide_speed;
+            }
         }
     }
 }
@@ -421,16 +530,20 @@ function update_animation() {
     // Update animation frame using delta_time
     var dt = delta_time / 1000000; // Convert to seconds
     
-    // Progress animation based on state
-    switch(state) {
+    // Progress animation based on VISUAL state (not logical state)
+    switch(visual_state) {
         case PLAYER_STATE.IDLE:
-            image_index = 0; // Static frame for idle
+            // Use a slower animation speed for idle
+            anim_frame += idle_anim_speed * dt;
+            // Keep anim_frame within sprite bounds to avoid potential precision issues
+            anim_frame = anim_frame % sprite_get_number(spr_player_idle_right);
+            image_index = floor(anim_frame);
             break;
             
         case PLAYER_STATE.MOVING:
             anim_frame += anim_speed * dt;
             // Keep anim_frame within sprite bounds to avoid potential precision issues
-            anim_frame = anim_frame % sprite_get_number(sprite_index);
+            anim_frame = anim_frame % sprite_get_number(spr_player_move_right);
             image_index = floor(anim_frame);
             break;
             

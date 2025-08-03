@@ -30,6 +30,7 @@ move_dir = 0;
 // Mining variables
 mining_timer = 0;
 #macro MINING_DURATION 0.5 // Time in seconds for mining animation
+#macro MINING_ANIMATION_SPEED 2.0 // Animation speed multiplier (higher = faster animation)
 mining_target = noone;
 mining_range = 16; // Reduced from 32 to 16
 #macro MINING_ANGLE 60 // Define mining angle in degrees (instead of 180°)
@@ -247,20 +248,23 @@ function process_mining_state() {
         exit;
     }
     
-    // Increment mining timer using delta_time
-    mining_timer += delta_time / 1000000; // Convert to seconds
+    // Increment mining timer using delta_time, applying the animation speed multiplier
+    // This makes the animation faster but keeps the actual mining duration the same
+    mining_timer += (delta_time / 1000000) * MINING_ANIMATION_SPEED; // Convert to seconds and apply speed multiplier
     
-    // Update pickaxe angle for swing animation
-    var swing_progress = mining_timer / MINING_DURATION;
+    // Calculate normalized animation progress (0.0 to 1.0)
+    var animation_progress = min(mining_timer / MINING_DURATION * MINING_ANIMATION_SPEED, 1.0);
+    
+    // Update pickaxe angle for swing animation based on animation progress
     var direction_multiplier = (facing == PLAYER_FACING.RIGHT ? 1 : -1);
     pickaxe_angle = lerp(
         pickaxe_start_angle * direction_multiplier, 
         pickaxe_end_angle * direction_multiplier, 
-        swing_progress
+        animation_progress
     );
     
-    // Check if mining action completed
-    if (mining_timer >= MINING_DURATION) {
+    // Check if mining action completed (using the actual mining duration)
+    if (mining_timer / MINING_ANIMATION_SPEED >= MINING_DURATION) {
         // Hit the resource
         with (mining_target) {
             hit_resource(other.pickaxe_level);
@@ -568,9 +572,10 @@ function update_animation() {
             break;
             
         case PLAYER_STATE.MINING:
-            // Mining animation based on progress
+            // Mining animation based on progress with animation speed multiplier
+            var animation_progress = min((mining_timer / MINING_DURATION) * MINING_ANIMATION_SPEED, 1.0);
             var total_frames = sprite_get_number(sprite_index);
-            image_index = floor((mining_timer / MINING_DURATION) * total_frames);
+            image_index = floor(animation_progress * total_frames);
             if (image_index >= total_frames) image_index = total_frames - 1;
             break;
     }

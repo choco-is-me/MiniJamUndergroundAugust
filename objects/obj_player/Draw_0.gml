@@ -45,9 +45,10 @@ switch(pickaxe_level) {
 
 // Draw pickaxe differently based on state
 if (state == PLAYER_STATE.MINING) {
-    // Calculate animation frame for pickaxe during mining
+    // Calculate animation progress for pickaxe during mining with animation speed multiplier
+    var animation_progress = min((mining_timer / MINING_DURATION) * MINING_ANIMATION_SPEED, 1.0);
     var pickaxe_frames = sprite_get_number(pickaxe_sprite);
-    var pickaxe_frame = floor((mining_timer / MINING_DURATION) * pickaxe_frames);
+    var pickaxe_frame = floor(animation_progress * pickaxe_frames);
     if (pickaxe_frame >= pickaxe_frames) pickaxe_frame = pickaxe_frames - 1;
     
     // Draw the pickaxe rotated near the player's hand

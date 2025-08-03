@@ -469,6 +469,7 @@
     {"id":{"name":"spr_tele_wood","path":"sprites/spr_tele_wood/spr_tele_wood.yy",},},
     {"id":{"name":"spr_tele","path":"sprites/spr_tele/spr_tele.yy",},},
     {"id":{"name":"spr_tile_set","path":"sprites/spr_tile_set/spr_tile_set.yy",},},
+    {"id":{"name":"spr_title_bg","path":"sprites/spr_title_bg/spr_title_bg.yy",},},
     {"id":{"name":"spr_title","path":"sprites/spr_title/spr_title.yy",},},
     {"id":{"name":"ts_forest","path":"tilesets/ts_forest/ts_forest.yy",},},
     {"id":{"name":"ts_main","path":"tilesets/ts_main/ts_main.yy",},},

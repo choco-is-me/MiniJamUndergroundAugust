@@ -1,9 +1,23 @@
 /// @description Initialize diamond resource variables
 
+// Constants for resource settings
+#macro DIAMOND_MAX_HP 9
+#macro DIAMOND_BASE_DAMAGE 1
+#macro DIAMOND_FRAMES 1  // Max frame index (0-1, so value is 1)
+#macro DIAMOND_NO_ANIMATION 0
+#macro DIAMOND_DROP_MIN 1
+#macro DIAMOND_DROP_MAX 3
+#macro DIAMOND_DROP_OFFSET_MIN -8
+#macro DIAMOND_DROP_OFFSET_MAX 8
+
 // Resource properties
-hp = 9; // Number of hits to break
+hp = DIAMOND_MAX_HP; // Number of hits to break
 required_pickaxe = PICKAXE_TYPE.GOLD; // Minimum pickaxe level needed
 resource_name = "Diamond";
+
+// Set random sprite frame for visual variety
+image_index = irandom(DIAMOND_FRAMES); // Randomly select frame 0 or 1
+image_speed = DIAMOND_NO_ANIMATION; // Stop animation to keep the selected frame
 
 /// @function hit_resource(pickaxe_level)
 /// @param {real} pickaxe_level The level of the pickaxe hitting this resource
@@ -12,9 +26,9 @@ function hit_resource(pickaxe_level) {
     if (pickaxe_level >= required_pickaxe) {
         // Calculate damage based on pickaxe level
         // Higher level pickaxes do more damage
-        var damage = 1;
+        var damage = DIAMOND_BASE_DAMAGE;
         if (pickaxe_level > required_pickaxe) {
-            damage = pickaxe_level - required_pickaxe + 1;
+            damage = pickaxe_level - required_pickaxe + DIAMOND_BASE_DAMAGE;
         }
         
         // Apply damage to resource
@@ -29,15 +43,15 @@ function hit_resource(pickaxe_level) {
             var items_layer = layer_get_id("Items");
             if (items_layer == -1) {
                 // Layer doesn't exist, create it above the instance layer
-                items_layer = layer_create(depth - 100, "Items");
+                items_layer = layer_create(depth - ITEMS_LAYER_DEPTH_OFFSET, "Items");
             }
             
-            // Spawn 1-3 stone items when broken
-            var item_count = irandom_range(1, 3);
+            // Spawn 1-3 diamond items when broken
+            var item_count = irandom_range(DIAMOND_DROP_MIN, DIAMOND_DROP_MAX);
             for (var i = 0; i < item_count; i++) {
                 // Create with slight random offset
-                var offset_x = random_range(-8, 8);
-                var offset_y = random_range(-8, 8);
+                var offset_x = random_range(DIAMOND_DROP_OFFSET_MIN, DIAMOND_DROP_OFFSET_MAX);
+                var offset_y = random_range(DIAMOND_DROP_OFFSET_MIN, DIAMOND_DROP_OFFSET_MAX);
                 instance_create_layer(x + offset_x, y + offset_y, items_layer, obj_diamond_item);
             }
             

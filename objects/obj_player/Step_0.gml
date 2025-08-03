@@ -3,6 +3,9 @@
 // Get player input
 get_controls();
 
+// Update action cooldown
+update_action_cooldown();
+
 // State machine
 switch(state) {
     case PLAYER_STATE.IDLE:

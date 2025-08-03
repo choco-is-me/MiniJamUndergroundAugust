@@ -21,43 +21,62 @@ if (facing == PLAYER_FACING.LEFT) {
     draw_sprite(sprite_to_use, image_index, x, y);
 }
 
-// Draw pickaxe when mining
-if (state == PLAYER_STATE.MINING && mining_target != noone) {
-    var pickaxe_sprite;
-    
-    // Select pickaxe sprite based on level
-    switch(pickaxe_level) {
-        case PICKAXE_TYPE.WOOD:
-            pickaxe_sprite = spr_pickaxe_wood;
-            break;
-        case PICKAXE_TYPE.STONE:
-            pickaxe_sprite = spr_pickaxe_stone;
-            break;
-        case PICKAXE_TYPE.IRON:
-            pickaxe_sprite = spr_pickaxe_iron;
-            break;
-        case PICKAXE_TYPE.GOLD:
-            pickaxe_sprite = spr_pickaxe_gold;
-            break;
-        case PICKAXE_TYPE.PRISMATIC:
-            pickaxe_sprite = spr_pickaxe_prismatic;
-            break;
-    }
-    
-    // Calculate animation frame for pickaxe
+// Draw pickaxe - always visible but with different position/rotation based on state
+var pickaxe_sprite;
+
+// Select pickaxe sprite based on level
+switch(pickaxe_level) {
+    case PICKAXE_TYPE.WOOD:
+        pickaxe_sprite = spr_pickaxe_wood;
+        break;
+    case PICKAXE_TYPE.STONE:
+        pickaxe_sprite = spr_pickaxe_stone;
+        break;
+    case PICKAXE_TYPE.IRON:
+        pickaxe_sprite = spr_pickaxe_iron;
+        break;
+    case PICKAXE_TYPE.GOLD:
+        pickaxe_sprite = spr_pickaxe_gold;
+        break;
+    case PICKAXE_TYPE.PRISMATIC:
+        pickaxe_sprite = spr_pickaxe_prismatic;
+        break;
+}
+
+// Draw pickaxe differently based on state
+if (state == PLAYER_STATE.MINING) {
+    // Calculate animation frame for pickaxe during mining
     var pickaxe_frames = sprite_get_number(pickaxe_sprite);
     var pickaxe_frame = floor((mining_timer / MINING_DURATION) * pickaxe_frames);
     if (pickaxe_frame >= pickaxe_frames) pickaxe_frame = pickaxe_frames - 1;
     
-    // Calculate position offset for pickaxe based on facing
-    var offset_x = (facing == PLAYER_FACING.RIGHT) ? 16 : -16;
+    // Draw the pickaxe rotated near the player's hand
+    var dir_mult = (facing == PLAYER_FACING.RIGHT) ? 1 : -1;
+    var offset_x = dir_mult * 8; // Offset from player center to appear in hand
     
-    // Draw the pickaxe
-    if (facing == PLAYER_FACING.LEFT) {
-        draw_sprite_ext(pickaxe_sprite, pickaxe_frame, x + offset_x, y, -1, 1, 0, c_white, 1);
-    } else {
-        draw_sprite(pickaxe_sprite, pickaxe_frame, x + offset_x, y);
-    }
+    draw_sprite_ext(
+        pickaxe_sprite, 
+        pickaxe_frame, 
+        x + offset_x, // Position offset from player to look like it's in hand
+        y - 2, // Slight vertical offset
+        dir_mult, 1, // Scale (flipped based on facing)
+        pickaxe_angle, // Rotation angle calculated during mining process
+        c_white, 1
+    );
+} else {
+    // Normal idle pickaxe
+    var dir_mult = (facing == PLAYER_FACING.RIGHT) ? 1 : -1;
+    var offset_x = dir_mult * 8; // Offset from player center to appear in hand
+    
+    draw_sprite_ext(
+        pickaxe_sprite, 
+        0, // Default frame
+        x + offset_x, 
+        y - 2, // Slight vertical offset
+        dir_mult, 1, // Scale (flipped based on facing)
+        0, // No rotation when idle
+        c_white, 1
+    );
 }
 
 // Draw Tab button indicator above player if upgrade is available

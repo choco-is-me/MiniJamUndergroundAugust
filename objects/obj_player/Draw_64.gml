@@ -96,7 +96,6 @@ if (is_pickaxe_upgrade_available()) {
     var button_x = sprite_center_x;
     var button_y_float = sin(current_time / 500) * 3; // Small floating effect
     
-    // Draw the pickaxe button
     draw_sprite_ext(
         spr_pickaxe_button,
         button_frame,

@@ -30,7 +30,18 @@ move_dir = 0;
 mining_timer = 0;
 #macro MINING_DURATION 0.5 // Time in seconds for mining animation
 mining_target = noone;
-mining_range = 32; // How far player can mine
+mining_range = 16; // Reduced from 32 to 16
+#macro MINING_ANGLE 60 // Define mining angle in degrees (instead of 180°)
+
+// Action cooldown variables
+#macro ACTION_COOLDOWN 0.5 // Cooldown time in seconds between mining actions
+action_cooldown_timer = 0;
+can_perform_action = true;
+
+// Pickaxe animation variables
+pickaxe_angle = 0;
+pickaxe_start_angle = 45; // Starting angle for swing
+pickaxe_end_angle = -45;  // Ending angle for swing
 
 // Pickaxe variables
 enum PICKAXE_TYPE {
@@ -89,12 +100,15 @@ function process_idle_state() {
     }
     
     // Check for mining action
-    if (key_action_pressed) {
+    if (key_action_pressed && can_perform_action) {
         var target = find_minable_target();
         if (target != noone) {
             state = PLAYER_STATE.MINING;
             mining_target = target;
             mining_timer = 0;
+            can_perform_action = false;
+            action_cooldown_timer = 0;
+            pickaxe_angle = pickaxe_start_angle * (facing == PLAYER_FACING.RIGHT ? 1 : -1);
             exit;
         }
     }
@@ -132,12 +146,15 @@ function process_movement_state() {
     }
     
     // Check for mining action
-    if (key_action_pressed) {
+    if (key_action_pressed && can_perform_action) {
         var target = find_minable_target();
         if (target != noone) {
             state = PLAYER_STATE.MINING;
             mining_target = target;
             mining_timer = 0;
+            can_perform_action = false;
+            action_cooldown_timer = 0;
+            pickaxe_angle = pickaxe_start_angle * (facing == PLAYER_FACING.RIGHT ? 1 : -1);
             hspd = 0;
             vspd = 0;
             exit;
@@ -165,19 +182,21 @@ function process_mining_state() {
     // Increment mining timer using delta_time
     mining_timer += delta_time / 1000000; // Convert to seconds
     
+    // Update pickaxe angle for swing animation
+    var swing_progress = mining_timer / MINING_DURATION;
+    var direction_multiplier = (facing == PLAYER_FACING.RIGHT ? 1 : -1);
+    pickaxe_angle = lerp(
+        pickaxe_start_angle * direction_multiplier, 
+        pickaxe_end_angle * direction_multiplier, 
+        swing_progress
+    );
+    
     // Check if mining action completed
     if (mining_timer >= MINING_DURATION) {
         // Hit the resource
         with (mining_target) {
             hit_resource(other.pickaxe_level);
         }
-        state = PLAYER_STATE.IDLE;
-        mining_target = noone;
-        mining_timer = 0;
-    }
-    
-    // Cancel mining if player releases action button or moves
-    if (!key_action_held || key_left_hold || key_right_hold || key_up_hold || key_down_hold) {
         state = PLAYER_STATE.IDLE;
         mining_target = noone;
         mining_timer = 0;
@@ -191,10 +210,12 @@ function is_target_valid(target) {
     var dist = point_distance(x, y, target.x, target.y);
     if (dist > mining_range) return false;
     
-    var is_in_direction = (facing == PLAYER_FACING.RIGHT && target.x > x) || 
-                          (facing == PLAYER_FACING.LEFT && target.x < x);
+    // Calculate the center angle and check if target is within mining angle
+    var center_angle = (facing == PLAYER_FACING.RIGHT) ? 0 : 180;
+    var angle_to_target = point_direction(x, y, target.x, target.y);
+    var angle_diff = abs(angle_difference(angle_to_target, center_angle));
     
-    return is_in_direction;
+    return (angle_diff <= MINING_ANGLE / 2);
 }
 
 // Apply movement with collision handling and wall sliding
@@ -240,32 +261,32 @@ function apply_movement_with_collision() {
 
 // Find minable object in front of player
 function find_minable_target() {
-    var check_x = x;
-    var check_range = mining_range;
-    
-    // Adjust check position based on facing direction
-    if (facing == PLAYER_FACING.RIGHT) {
-        check_x = x + check_range / 2;
-    } else {
-        check_x = x - check_range / 2;
-    }
-    
     // Check if any minable objects are within range
     var resources = [obj_stone, obj_iron, obj_gold, obj_diamond];
     var closest_distance = mining_range;
     var closest_instance = noone;
     
+    // Calculate the center angle based on facing direction
+    var center_angle = (facing == PLAYER_FACING.RIGHT) ? 0 : 180;
+    
     for (var i = 0; i < array_length(resources); i++) {
         var res_obj = resources[i];
         with (res_obj) {
             var dist = point_distance(x, y, other.x, other.y);
-            // Check if resource is in horizontal direction player is facing
-            var is_in_direction = (other.facing == PLAYER_FACING.RIGHT && x > other.x) || 
-                                  (other.facing == PLAYER_FACING.LEFT && x < other.x);
             
-            if (dist < other.mining_range && is_in_direction && dist < closest_distance) {
-                closest_distance = dist;
-                closest_instance = id;
+            // Check if within range
+            if (dist < other.mining_range) {
+                // Calculate angle to resource
+                var angle_to_resource = point_direction(other.x, other.y, x, y);
+                
+                // Check if within the mining angle
+                var angle_diff = abs(angle_difference(angle_to_resource, center_angle));
+                var is_in_angle = angle_diff <= MINING_ANGLE / 2;
+                
+                if (is_in_angle && dist < closest_distance) {
+                    closest_distance = dist;
+                    closest_instance = id;
+                }
             }
         }
     }
@@ -387,4 +408,15 @@ function update_animation() {
     // Update button animations
     button_anim_frame += BUTTON_ANIM_SPEED * dt;
     button_anim_frame = button_anim_frame % 2; // Only 2 frames for button animations
+}
+
+// Update action cooldown timer
+function update_action_cooldown() {
+    if (!can_perform_action) {
+        action_cooldown_timer += delta_time / 1000000; // Convert to seconds
+        if (action_cooldown_timer >= ACTION_COOLDOWN) {
+            can_perform_action = true;
+            action_cooldown_timer = 0;
+        }
+    }
 }

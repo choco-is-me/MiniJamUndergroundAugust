@@ -84,6 +84,32 @@ for (var i = 0; i < array_length(resource_sprites); i++) {
     current_y += sprite_get_height(sprite) * RESOURCE_SPRITE_SCALE + RESOURCE_DISPLAY_SPACING;
 }
 
+// Calculate the position for the pickaxe upgrade button
+var upgrade_button_scale = 6.0;
+var button_frame = floor(button_anim_frame);
+
+// Draw the pickaxe upgrade button if an upgrade is available
+if (is_pickaxe_upgrade_available()) {
+    // Position the button centered above the resource counters with more distance
+    var resources_top_y = base_y - (array_length(resource_sprites) * (sprite_get_height(resource_sprites[0]) * RESOURCE_SPRITE_SCALE + RESOURCE_DISPLAY_SPACING));
+    var button_y = resources_top_y - 50; // Adjusted: Increased space above the resources
+    var button_x = sprite_center_x;
+    var button_y_float = sin(current_time / 500) * 3; // Small floating effect
+    
+    // Draw the pickaxe button
+    draw_sprite_ext(
+        spr_pickaxe_button,
+        button_frame,
+        button_x,
+        button_y + button_y_float,
+        upgrade_button_scale,
+        upgrade_button_scale,
+        0,
+        c_white,
+        1
+    );
+}
+
 // Reset drawing properties
 draw_set_color(c_white);
 draw_set_halign(fa_left);

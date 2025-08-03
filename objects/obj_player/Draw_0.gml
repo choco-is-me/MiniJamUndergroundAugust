@@ -59,3 +59,17 @@ if (state == PLAYER_STATE.MINING && mining_target != noone) {
         draw_sprite(pickaxe_sprite, pickaxe_frame, x + offset_x, y);
     }
 }
+
+// Draw Tab button indicator above player if upgrade is available
+if (is_pickaxe_upgrade_available()) {
+    var button_frame = floor(button_anim_frame);
+    var button_y_offset = -13; // Adjusted: Reduced offset to move closer to player's head
+    var button_y_float = sin(current_time / 500) * 3; // Small floating effect
+    
+    draw_sprite(
+        spr_tab_button, 
+        button_frame, 
+        x, 
+        y + button_y_offset + button_y_float
+    );
+}

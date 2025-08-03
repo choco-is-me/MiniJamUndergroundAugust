@@ -75,6 +75,10 @@ image_speed = 0;
 anim_frame = 0;
 anim_speed = 9.0; // Frames per second
 
+// UI Animation variables
+#macro BUTTON_ANIM_SPEED 4.0 // Frames per second for button animations
+button_anim_frame = 0;
+
 // FUNCTION DEFINITIONS (still part of Create Event)
 // Idle state processing
 function process_idle_state() {
@@ -269,6 +273,35 @@ function find_minable_target() {
     return closest_instance;
 }
 
+// Check if pickaxe upgrade is available
+function is_pickaxe_upgrade_available() {
+    // Check if already at max level
+    if (pickaxe_level == PICKAXE_TYPE.PRISMATIC) {
+        return false;
+    }
+    
+    // Check if player has enough resources for upgrade
+    switch (pickaxe_level) {
+        case PICKAXE_TYPE.WOOD:
+            // Need 10 stone for Stone Pickaxe
+            return (stone_count >= 10);
+            
+        case PICKAXE_TYPE.STONE:
+            // Need 10 iron for Iron Pickaxe
+            return (iron_count >= 10);
+            
+        case PICKAXE_TYPE.IRON:
+            // Need 10 gold for Gold Pickaxe
+            return (gold_count >= 10);
+            
+        case PICKAXE_TYPE.GOLD:
+            // Need 10 diamond for Prismatic Pickaxe
+            return (diamond_count >= 10);
+    }
+    
+    return false;
+}
+
 // Handle pickaxe upgrade attempt
 function attempt_pickaxe_upgrade() {
     // Check if already at max level
@@ -350,4 +383,8 @@ function update_animation() {
             if (image_index >= total_frames) image_index = total_frames - 1;
             break;
     }
+    
+    // Update button animations
+    button_anim_frame += BUTTON_ANIM_SPEED * dt;
+    button_anim_frame = button_anim_frame % 2; // Only 2 frames for button animations
 }

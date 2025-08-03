@@ -59,3 +59,5 @@ if (state == PLAYER_STATE.MINING && mining_target != noone) {
         draw_sprite(pickaxe_sprite, pickaxe_frame, x + offset_x, y);
     }
 }
+
+show_debug_message(stone_count)

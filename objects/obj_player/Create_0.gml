@@ -294,6 +294,43 @@ function find_minable_target() {
     return closest_instance;
 }
 
+// Mark all resources in mining range for outline display
+function mark_resources_in_range() {
+    // Get list of all resource objects
+    var resources = [obj_stone, obj_iron, obj_gold, obj_diamond];
+    var center_angle = (facing == PLAYER_FACING.RIGHT) ? 0 : 180;
+    
+    // First, mark all resources as not in range
+    for (var i = 0; i < array_length(resources); i++) {
+        var res_obj = resources[i];
+        with (res_obj) {
+            in_mining_range = false;
+        }
+    }
+    
+    // Then mark those that are in range
+    for (var i = 0; i < array_length(resources); i++) {
+        var res_obj = resources[i];
+        with (res_obj) {
+            var dist = point_distance(x, y, other.x, other.y);
+            
+            // Check if within range
+            if (dist < other.mining_range) {
+                // Calculate angle to resource
+                var angle_to_resource = point_direction(other.x, other.y, x, y);
+                
+                // Check if within the mining angle
+                var angle_diff = abs(angle_difference(angle_to_resource, center_angle));
+                var is_in_angle = angle_diff <= MINING_ANGLE / 2;
+                
+                if (is_in_angle) {
+                    in_mining_range = true;
+                }
+            }
+        }
+    }
+}
+
 // Check if pickaxe upgrade is available
 function is_pickaxe_upgrade_available() {
     // Check if already at max level

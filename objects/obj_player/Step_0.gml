@@ -26,3 +26,6 @@ if (key_upgrade_pickaxe) {
 
 // Update animation
 update_animation();
+
+// Mark resources in range to display outline
+mark_resources_in_range();

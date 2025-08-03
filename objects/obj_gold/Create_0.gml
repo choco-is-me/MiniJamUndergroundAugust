@@ -10,6 +10,12 @@
 #macro GOLD_DROP_OFFSET_MIN -8
 #macro GOLD_DROP_OFFSET_MAX 8
 
+// Flag to track if this resource is in mining range of player
+in_mining_range = false;
+
+// Original sprite for reference when drawing the outline
+original_sprite = sprite_index;
+
 // Resource properties
 hp = GOLD_MAX_HP; // Number of hits to break
 required_pickaxe = PICKAXE_TYPE.IRON; // Minimum pickaxe level needed
